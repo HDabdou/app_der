@@ -1,23 +1,28 @@
 bntNotClick{
     color: #fff;
-    background-color: #007bff;
+    background-color: #ffc107;
     border-color: #007bff;
 }
 bntClick{
     color: #fff;
-    background-color: #ffc107;
+    background-color: #007bff;
     border-color: #ffc107;
 }
-#der-options button:focus{
+#om-options a:hover{
     color : white ;
-    background-color: #5cb85c;
-    border-color: #4cae4c; 
+    background-color: #007bff;
+    text-decoration: none ;
+}
+myBtnMenu {
+    color: #fff;
+    background-color: maroon;
+    border-color: maroon;
+}
+#om-options a:focus{
+    color : white ;
+    background-color: #007bff;
     text-decoration: none ;
 }
 
-.tab-content{
-    position: relative;
-    left: 2rem;
-}
 
 

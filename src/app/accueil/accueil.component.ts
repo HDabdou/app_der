@@ -3,6 +3,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { HandlerService } from '../service/handler.service';
 import { Chart } from 'chart.js';
 import { DatePipe } from '@angular/common';
+import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-accueil',
   templateUrl: './accueil.component.html',
@@ -10,6 +11,7 @@ import { DatePipe } from '@angular/common';
 })
 export class AccueilComponent implements OnInit {
 
+  soumettre:number = 0;
   reponse:string='';
   message:string='';
   listRecouvremet:any=[];
@@ -25,6 +27,15 @@ export class AccueilComponent implements OnInit {
     }
     this.display =1;
   }
+  soumettreClieck(){
+    //if(this.soumettre == 0){
+      this.soumettre=1
+    //}
+    //if(this.soumettre == 1){
+    //  this.soumettre=0
+   // }
+    
+  }
   tabRendezVous(){
     this.listRecouvremet =[];
     for(let r of this.Recouvrement){
@@ -34,9 +45,7 @@ export class AccueilComponent implements OnInit {
     }
     this.display =1;
   }
-  tabTout(){
-    this.listRecouvremet = this.Recouvrement;
-  }
+
   home(){
     //this.getClassCSS();
     this.display = 0;
@@ -51,7 +60,7 @@ export class AccueilComponent implements OnInit {
     this.display =1;
   }
   Recouvrement = [
-    {client:'Abdou',montant:10000,type:1,date:new Date().toLocaleString()},
+    {client:'Abdou',montant:10000,type:1,date:'03/12/2018 à 15:39:15'},
     {client:'Ablaye',montant:20000,type:2,date:new Date().toLocaleString()},
     {client:'Fatou',montant:12000,type:3,date:new Date().toLocaleString()},
     {client:'Maguette',montant:10000,type:1,date:new Date().toLocaleString()},
@@ -72,8 +81,24 @@ export class AccueilComponent implements OnInit {
   nomRec :any;
   nomRV :any;
   nomFN :any;
+  file :any;
+  fileChange(event) {
+    this.file= event.target.files[0];
+    let fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      console.log(fileReader.result);
+    } 
+    
+    //fileReader.readAsArrayBuffer(this.file);
+    console.log(XLSX.utils.sheet_to_json(this.file));
+    console.log(this.file);
+  }
+  soumission(){
+    
+    this.soumettre = 0;
+  }
   ngOnInit() {
-    this.listRecouvremet = this.Recouvrement;
+    //this.listRecouvremet = this.Recouvrement;
    // console.log(this.listRecouvremet);
     
     this.nomRec =0;
@@ -93,7 +118,7 @@ export class AccueilComponent implements OnInit {
     this.myChart = new Chart('myChart', {
       type: 'pie',
       data: {
-          labels: ["Recouvrement", "Rendez-vous", "Finaliser"],
+          labels: ["Recouvrement", "Rendez-vous", "Finalisés"],
           datasets: [{
               label: '# of Votes',
               data: [this.nomRec,this.nomRV, this.nomFN],

@@ -3,22 +3,37 @@
     <div class="panel panel-info">
         <div class="panel panel-heading"></div>
         <div class="panel panel-body">
-          <tabset>
-            <tab heading="Home">
-                <div  id="chart" >
-                    <div  style=" width: 650px; height: 400px; text-align: center;padding:0%;margin-left: 20%">
-                      <canvas  id="myChart" width="400" height="400"></canvas>
-                    </div>
-                  </div>
+          <tabset style="text-align: center">
+            <tab>
+              <ng-template tabHeading>
+                <span class="badge badge-light" style="font-size: 150%">Accueil</span>
+              </ng-template>
+              <div class="row" style="margin-top:1rem">
+                <div class="col-2">
+                  <span class="badge badge-info" (click)="soumettreClieck()" style="font-size: 110%;cursor: pointer;">Soumettre une liste</span>
+                </div>
+                <div class="col-4" *ngIf="soumettre == 1">
+                  <input  class="form-control" style="border: transparent" type="file"  (change)="fileChange($event)" placeholder="Uploader Image" accept=".xlsx,.xls">
+                </div>
+                <div class="col-6" style="text-align: left" *ngIf="soumettre == 1">
+                  <button class="col-3" type="submit" (click)="soumission()"  class="btn btn-success ">valider</button>
+                </div>
+              </div>
+              <div  id="chart" >
+                <div  style=" width: 650px; height: 400px; text-align: center;padding:0%;margin-left: 20%">
+                  <canvas  id="myChart" width="400" height="400"></canvas>
+                </div>
+              </div>
             </tab>
-            <tab heading="Liste">
-             
-              <div class="der-options" style="margin-top: 1rem">
-                  <button href="#tab" class="btn btn-primary" (click)="tabTout()" style="margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;"  data-toggle="tab">Tout</button>
-                  <button href="#tab" class="btn btn-primary" (click)="tabRecouvrement()" style="margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;"  data-toggle="tab">Recouvrement</button>
-                  <button href="#tab" class="btn btn-primary" (click)="tabRendezVous()" style="margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;"  data-toggle="tab">Rendez-vous</button>
-                  <button href="#tab" class="btn btn-primary" (click)="tabFinaliser()" style="margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;"  data-toggle="tab">Finaliser</button>
-                  <input type="text" style="width: 15%;border-radius: 2rem 0rem 2rem 2rem;border: 2px solid #36a9e0;margin-left: 3%;" placeholder="Filtrer par nom" [(ngModel)]="filtre" name="filtre" id="">
+            <tab >
+                <ng-template tabHeading>
+                    <span class="badge badge-light" style="font-size: 150%">Suivi</span>
+                  </ng-template>
+              <div id="om-options" style="margin-top: 1rem">
+                  <a href="#tab" class="btn myBtnMenu " (click)="tabRecouvrement()" style="margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;"  data-toggle="tab">Recouvrement</a>
+                  <a href="#tab" class="btn myBtnMenu " (click)="tabRendezVous()" style="margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;"  data-toggle="tab">Rendez-vous</a>
+                  <a href="#tab" class="btn  myBtnMenu " (click)="tabFinaliser()" style="margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;"  data-toggle="tab">Finalisés</a>
+                  <input type="text" style="width: 15%;border: 1px solid;margin-left: 3%;padding-left: 13px;" placeholder="Recherche ..." [(ngModel)]="filtre" name="filtre" id="">
               </div>
               <div  id="tab">
                   <table class="table"  style="margin-top:1rem">
@@ -30,7 +45,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                    <tr *ngFor="let l of listRecouvremet | filterBy: ['client']: filtre; let i=index">
+                    <tr *ngFor="let l of listRecouvremet | filterBy: ['client','montant','date']: filtre; let i=index">
                         <td ><strong>{{l.client}}</strong></td>
                         <td ><strong>{{l.montant}}</strong></td>
                         <td ><strong>{{l.date}}</strong></td>
