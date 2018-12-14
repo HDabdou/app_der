@@ -20,12 +20,13 @@ export class AccueilComponent implements OnInit {
   display:number=0;
   tabRecouvrement(){
     this.listRecouvremet =[];
+    console.log(this.listeRecrutement);
     for(let r of this.Recouvrement){
-      if(r.type == 1){
+      if(r.etat == 0){
         this.listRecouvremet.push(r);
-      }
+      } 
     }
-    this.display =1;
+    this.display = 1;
   }
   soumettreClieck(){
     //if(this.soumettre == 0){
@@ -39,7 +40,7 @@ export class AccueilComponent implements OnInit {
   tabRendezVous(){
     this.listRecouvremet =[];
     for(let r of this.Recouvrement){
-      if(r.type == 2){
+      if(r.etat == 1){
         this.listRecouvremet.push(r);
       }
     }
@@ -53,23 +54,14 @@ export class AccueilComponent implements OnInit {
   tabFinaliser(){
     this.listRecouvremet =[];
     for(let r of this.Recouvrement){
-      if(r.type == 3){
+      if(r.etat == 2){
         this.listRecouvremet.push(r);
       }
     }
     this.display =1;
   }
-  Recouvrement = [
-    {client:'Abdou',montant:10000,type:1,date:'03/12/2018 à 15:39:15'},
-    {client:'Ablaye',montant:20000,type:2,date:new Date().toLocaleString()},
-    {client:'Fatou',montant:12000,type:3,date:new Date().toLocaleString()},
-    {client:'Maguette',montant:10000,type:1,date:new Date().toLocaleString()},
-    {client:'Awa',montant:30000,type:2,date:new Date().toLocaleString()},
-    {client:'Adama',montant:10000,type:3,date:new Date().toLocaleString()},
-    {client:'Astou',montant:10000,type:1,date:new Date().toLocaleString()},
-    {client:'Coumba',montant:10000,type:2,date:new Date().toLocaleString()},
-    {client:'FAllou',montant:10000,type:1,date:new Date().toLocaleString()},
-  ]
+  liste:number=0;
+  Recouvrement = []
   getClassCSS(){
     this.getColor.bntClick=false;
     this.getColor.bntNotClick=true;
@@ -78,71 +70,157 @@ export class AccueilComponent implements OnInit {
     'bntClick': false,
     'bntNotClick':true
   }
-  nomRec :any;
-  nomRV :any;
-  nomFN :any;
+  nomRec :any=0;
+  nomRV :any=0;
+  nomFN :any=0;
   file :any;
+  data:any;
+  listeExcel:any = [];
+  listeRecrutement:any = [];
   fileChange(event) {
     this.file= event.target.files[0];
     let fileReader = new FileReader();
     fileReader.onload = (e) => {
-      console.log(fileReader.result);
+      //console.log(fileReader.result);
+      this.data = fileReader.result;
+      let datas = new Uint8Array(this.data);
+      var arr = new Array();
+      for(var i = 0; i != datas.length; ++i) arr[i] = String.fromCharCode(datas[i]);
+      var bstr = arr.join("");
+      var workbook = XLSX.read(bstr, {type:"binary"});
+      var first_sheet_name = workbook.SheetNames[0];
+      var worksheet = workbook.Sheets[first_sheet_name];
+      //console.log(XLSX.utils.sheet_to_json(worksheet,{raw:true}));
+      this.listeExcel= XLSX.utils.sheet_to_json(worksheet,{raw:true})
+      for(let i = 0; i < this.listeExcel.length - 1 ;++i){
+        this.listeRecrutement.push(this.listeExcel[i])
+        //console.log(this.listeRecrutement);
+      }
+      this._derService.soumettre(this.listeRecrutement).then(res=>{console.log(res);
+      })
+     // console.log(XLSX.read(fileReader.result, {type: 'binary', cellDates:true, cellStyles:true}));
+      //console.log(XLSX.utils.sheet_to_json(fileReader));
+      //console.log(data);
+      //let json = XLSX.CFB.read(data)
     } 
-    
-    //fileReader.readAsArrayBuffer(this.file);
-    console.log(XLSX.utils.sheet_to_json(this.file));
-    console.log(this.file);
+    fileReader.readAsArrayBuffer(this.file);
+    for(let i of this.listeExcel){
+      console.log(i.nom);
+    }
   }
-  soumission(){
-    
+
+  soumission(){   
     this.soumettre = 0;
   }
+  lRecouvrement =[];
+  lRendezVous = [];
+  lFinaliser = [];
+  modalRef: BsModalRef;
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template);
+  }
+  constructor(private modalService: BsModalService,public _derService:HandlerService) { }
+
   ngOnInit() {
-    //this.listRecouvremet = this.Recouvrement;
-   // console.log(this.listRecouvremet);
-    
-    this.nomRec =0;
-    this.nomRV =0;
-    this.nomFN =0;
-    for(let r of this.Recouvrement){
-      if(r.type == 1){
-        this.nomRec=this.nomRec+r.montant;
+
+    this._derService.liste().then(res =>{
+     // console.log(res['message']);
+      this.Recouvrement= res['message'];
+      for(let i of this.Recouvrement){
+        
+        if(i.etat == 0){
+          this.nomRec = this.nomRec + this.getInfo1(i.client,'montant');
+        }
+        if(i.etat == 1){
+          this.nomRV = this.nomRV + this.getInfo1(i.client,'montant');
+        }
+        if(i.etat == 2){
+          this.nomFN = this.nomFN + this.getInfo1(i.client,'montant');
+        }
       }
-      if(r.type == 2){
-        this.nomRV=this.nomRV+r.montant;
+      console.log('Recouvrement '+this.nomRec+' Rendez vous '+this.nomRV+' Finaliser '+this.nomFN); 
+      this.myChart = new Chart('myChart', {
+        type: 'pie',
+        data: {
+            labels: ["Recouvrement", "Rendez-vous", "Finalisés"],
+            datasets: [{
+                label: '# of Votes',
+  
+                data: [this.nomRec,this.nomRV, this.nomFN],
+                backgroundColor: [
+                  'red',
+                  'green',
+                  'blue'
+                ],
+                borderWidth: 2
+            }]
+        },
+       // options: {
+          //events: ['click'],
+          
+         /* onClick: function(e) {
+            var element = this.getElementAtEvent(e);
+            if (element.length) {
+              console.log(element[0]);
+              var chartData = element[0]['_chart'].config.data;
+              var idx = element[0]['_index'];
+              console.log('Recouvrement '+this.nomRec+' Rendez vous '+this.nomRV+' Finaliser '+this.nomFN);
+  
+              console.log(idx);
+              this.liste=1
+              var label = chartData.labels[idx];
+              var value = chartData.datasets[0].data[idx];
+              var url =label + "  à  " + value;
+              console.log(url);
+              alert(url);
+            }
+          }*/
+        //}
+    });
+    })
+    setInterval(() => {
+      this._derService.callPeriodicHandler().then( res => {
+      //console.log(res['message']);
+      if(res['code']==1){
+        //this._derService.newListe()
+        this.listRecouvremet = res['message'];
+      
+        console.log('Recouvrement '+this.nomRec+' Rendez vous '+this.nomRV+' Finaliser '+this.nomFN);
+        
       }
-      if(r.type == 3){
-        this.nomFN=this.nomFN+r.montant;
+     /* console.log(res['code']);
+      this.code=res['code'];
+      if(this.code == 1)
+      { 
+        this.listRemonte=res['message'];
+        this.playNotif=1;
       }
+      if(this.playNotif == 1){
+        this.audio = new Audio();
+        this.audio.src ='./assets/windows-8-sms.mp3';
+        this.audio.play();  
+      }*/
+    } );
+      
+    }, 10000); 
+     
+
+     
+
+  console.log(this.listRecouvremet);
+  }
+  getInfo1(requete,nom){
+    let req = JSON.parse(requete);
+    if(nom == "montant"){
+      return req.montant ;
     }
-    this.myChart = new Chart('myChart', {
-      type: 'pie',
-      data: {
-          labels: ["Recouvrement", "Rendez-vous", "Finalisés"],
-          datasets: [{
-              label: '# of Votes',
-              data: [this.nomRec,this.nomRV, this.nomFN],
-              backgroundColor: [
-                'red',
-                'green',
-                'blue'
-              ],
-             
-              borderWidth: 2
-          }]
-      },
-      options: {
-          scales: {
-              yAxes: [{
-                  ticks: {
-                      beginAtZero:false
-                  }
-              }]
-          }
-      }
-  });
- 
-    
+    if(nom == "nom"){
+      return req.nom;
+    }
+
+    if(nom == "prenom"){
+      return req.prenom;   
+    }
+    return "null";
   }
- 
-  }
+}

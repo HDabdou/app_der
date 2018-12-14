@@ -9,7 +9,7 @@ export class HandlerService {
 
   //private url:string='https://sentool.bbstvnet.com/handler/';
   
-  private url:string='http://localhost/crm_remonte/';
+  private url:string='http://localhost/appDER_backend';
   private header :HttpHeaders;
   constructor(private http:HttpClient) {
     this.header = new HttpHeaders({'Content-Type': 'application/x-www-form-urlencoded'});
@@ -18,7 +18,18 @@ export class HandlerService {
   
   public callPeriodicHandler(): Promise<any>{
     let params="requestParam="+(new Date()).toString();
-    let link=this.url+"/periodicHandler.php";
+    let link=this.url+"/periodicHendler.php";
+    return this.http.post(link,params,{headers:this.header}).toPromise().then( res => {console.log(res); return res} ).catch(error => {console.log(error); return 'bad' });
+  }
+  public liste(): Promise<any>{
+    let params="requestParam="+(new Date()).toString();
+    let link=this.url+"/liste.php";
+    return this.http.post(link,params,{headers:this.header}).toPromise().then( res => {console.log(res); return res} ).catch(error => {console.log(error); return 'bad' });
+  }
+  public newListe(id): Promise<any>{
+    let data = JSON.stringify({id:id});
+    let params ='param='+data;
+    let link=this.url+"/newListe.php";
     return this.http.post(link,params,{headers:this.header}).toPromise().then( res => {console.log(res); return res} ).catch(error => {console.log(error); return 'bad' });
   }
 
@@ -29,6 +40,12 @@ export class HandlerService {
     let link=this.url+"/remonter.php";
     return this.http.post(link,params,{headers:this.header}).toPromise().then( res => {console.log(res);return res} ).catch(error => {console.log(error);return 'bad' });
   }
- 
+  public soumettre(requette): Promise<any>{
+    //let params="id="+id;
+    let data = JSON.stringify(requette);
+    let params ='param='+data;
+    let link=this.url+"/recouvrement.php";
+    return this.http.post(link,params,{headers:this.header}).toPromise().then( res => {console.log(res);return res} ).catch(error => {console.log(error);return 'bad' });
+  }
 
 }

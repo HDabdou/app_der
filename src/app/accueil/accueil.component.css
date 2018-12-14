@@ -13,6 +13,10 @@ bntClick{
     background-color: #007bff;
     text-decoration: none ;
 }
+myBadge{
+    color: white;
+    background-color: #041532;
+}
 myBtnMenu {
     color: #fff;
     background-color: maroon;
@@ -24,5 +28,11 @@ myBtnMenu {
     text-decoration: none ;
 }
 
+.tabset > ul{
+    background-color: #041532 !important;
+}
 
-
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover{
+    color : #686868;
+    background-color :#041532;
+ }

@@ -3,9 +3,9 @@
     <div class="panel panel-info">
         <div class="panel panel-heading"></div>
         <div class="panel panel-body">
-          <tabset style="text-align: center">
-            <tab>
-              <ng-template tabHeading>
+          <tabset class="nav-tabs" style="text-align: center;background-color: #041532;">
+            <tab class="alert alert-info" style="height: 47rem;">
+              <ng-template tabHeading >
                 <span class="badge badge-light" style="font-size: 150%">Accueil</span>
               </ng-template>
               <div class="row" style="margin-top:1rem">
@@ -13,22 +13,25 @@
                   <span class="badge badge-info" (click)="soumettreClieck()" style="font-size: 110%;cursor: pointer;">Soumettre une liste</span>
                 </div>
                 <div class="col-4" *ngIf="soumettre == 1">
-                  <input  class="form-control" style="border: transparent" type="file"  (change)="fileChange($event)" placeholder="Uploader Image" accept=".xlsx,.xls">
+                  <input  class="form-control" style="border: transparent;background-color: #d1ecf1;" type="file"  (change)="fileChange($event)" placeholder="Uploader Image" accept=".xlsx,.xls">
                 </div>
                 <div class="col-6" style="text-align: left" *ngIf="soumettre == 1">
                   <button class="col-3" type="submit" (click)="soumission()"  class="btn btn-success ">valider</button>
                 </div>
               </div>
-              <div  id="chart" >
+              <div *ngIf="liste==1">
+                <button class="btn btn-info" (click)="openModal(template)">Voir la liste</button>
+              </div>
+              <div  id="chart" class="col-12" >
                 <div  style=" width: 650px; height: 400px; text-align: center;padding:0%;margin-left: 20%">
                   <canvas  id="myChart" width="400" height="400"></canvas>
                 </div>
-              </div>
+              </div> 
             </tab>
             <tab >
-                <ng-template tabHeading>
-                    <span class="badge badge-light" style="font-size: 150%">Suivi</span>
-                  </ng-template>
+              <ng-template tabHeading>
+                  <span class="badge badge-light" style="font-size: 150%">Suivi</span>
+              </ng-template>
               <div id="om-options" style="margin-top: 1rem">
                   <a href="#tab" class="btn myBtnMenu " (click)="tabRecouvrement()" style="margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;"  data-toggle="tab">Recouvrement</a>
                   <a href="#tab" class="btn myBtnMenu " (click)="tabRendezVous()" style="margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;"  data-toggle="tab">Rendez-vous</a>
@@ -45,17 +48,17 @@
                       </tr>
                     </thead>
                     <tbody>
-                    <tr *ngFor="let l of listRecouvremet | filterBy: ['client','montant','date']: filtre; let i=index">
-                        <td ><strong>{{l.client}}</strong></td>
-                        <td ><strong>{{l.montant}}</strong></td>
-                        <td ><strong>{{l.date}}</strong></td>
+                    <tr *ngFor="let l of listRecouvremet ; let i=index">
+                        <td ><strong>{{getInfo1(l.client,'prenom')}} {{getInfo1(l.client,'nom')}} </strong></td>
+                        <td ><strong>{{getInfo1(l.client,'montant')}}</strong></td>
+                        <td ><strong>{{l.dateEnregistremet}}</strong></td>
                     </tbody>
                   </table>
               </div>
             </tab>
-
           </tabset>
         </div>
+        
         <ng-template #template>
             <div class="modal-header">
               <h4 class="modal-title pull-left">Gestion remonte</h4>
@@ -64,38 +67,23 @@
               </button>
             </div>
             <div class="modal-body">
-              <div>
-                   <form  #patientForm="ngForm">
-                      <div class="form-group">
-                          
-                          <ul class="list-group">
-                             <strong>Numero</strong> <li class="list-group-item">{{numeroTraiter}}</li>
-                             <strong>Montant</strong> <li class="list-group-item">{{montantTraiter}}</li>
-                             <strong>date Operation</strong> <li class="list-group-item">{{dateOp}}</li>
-                          </ul>
-                         <label class="control-label">Reponse</label>
-                         <select class="form-control" type="text" name="reponse" required
-                         [(ngModel)]="reponse"
-                         #name="ngModel"> 
-                            <option value="">---------Selectionné--------</option>
-                            <option *ngFor="let c of Result" >{{c.etat}}</option>
-                        </select> 
-                        <div *ngIf="reponse =='Echec'">
-                                <label class="control-label">Message</label>
-                                <select class="form-control" type="text" name="message" required
-                                [(ngModel)]="message"
-                                #name="ngModel"> 
-                                   <option value="">---------Selectionné--------</option>
-                                   <option *ngFor="let c of Echec" >{{c.info}}</option>
-                               </select> 
-                            </div>   
-                      </div>
-                     <p></p>
-                     <div class="form-group">
-                       <input type="submit" class="btn btn-success" value="" (click)="remonter(listRemonte.id);modalRef.hide()" value="Valider">
-                      </div>
-                    </form>
-              </div>
+              <table class="table table-responsive table-striped">
+                <thead>
+                    <tr>
+                        <th >Nom</th>
+                        <th >Montant</th>
+                        <th >Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                  <tr *ngFor="let l of Recouvrement | filterBy: ['client','montant','date']: filtre; let i=index">
+                    <td >{{l.client}}</td>
+                    <td >{{l.montant}}</td>
+                    <td >{{l.date}}</td>
+                    </tr>
+                  </tbody>
+                </table>
             </div>
           </ng-template>
     </div>
