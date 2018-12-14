@@ -92,7 +92,7 @@ export class AccueilComponent implements OnInit {
       var worksheet = workbook.Sheets[first_sheet_name];
       //console.log(XLSX.utils.sheet_to_json(worksheet,{raw:true}));
       this.listeExcel= XLSX.utils.sheet_to_json(worksheet,{raw:true})
-      for(let i = 0; i < this.listeExcel.length - 1 ;++i){
+      for(let i = 0; i < this.listeExcel.length ;++i){
         this.listeRecrutement.push(this.listeExcel[i])
         //console.log(this.listeRecrutement);
       }
@@ -182,11 +182,16 @@ export class AccueilComponent implements OnInit {
       this._derService.callPeriodicHandler().then( res => {
       //console.log(res['message']);
       if(res['code']==1){
-        //this._derService.newListe()
-        this.listRecouvremet = res['message'];
-      
-        console.log('Recouvrement '+this.nomRec+' Rendez vous '+this.nomRV+' Finaliser '+this.nomFN);
-        
+        this.listRecouvremet =[]
+        let id
+        for(let i = 0;i <this.Recouvrement.length - 1;++i){
+          id =this.Recouvrement[this.Recouvrement.length-1].id
+        }
+
+       this._derService.newListe(id).then(rep =>{
+          this.listRecouvremet = rep['message'];
+         console.log(this.listRecouvremet.length);
+        })
       }
      /* console.log(res['code']);
       this.code=res['code'];
