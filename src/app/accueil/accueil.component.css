@@ -36,3 +36,44 @@ myBtnMenu {
     color : #686868;
     background-color :#041532;
  }
+ .dot {
+    height: 25px;
+    width: 25px;
+    color: white;
+    background-color: darkred;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .tableTh{
+    color: white;
+    background-color: #D2691E;
+    border-color: #D2691E;
+}
+.myBadge{
+    color: black;
+    background-color: white;
+    border: 1px silid black;
+    border-radius: 1rem 0rem 1rem 1rem;
+}
+
+.myNav{
+    position: relative;
+    -moz-box-shadow: 1px 4px 16px rgba(0, 0, 3, .5);
+    -webkit-box-shadow: 1px 4px 16px rgba(0, 0, 3, .5);
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+    padding: 10px;
+    background: white;
+}
+.label-file {
+    cursor: pointer;
+    color: #00b1ca;
+    font-weight: bold;
+}
+.label-file:hover {
+    color: #25a5c4;
+}
+
+.input-file {
+    display: none;
+}
+

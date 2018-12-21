@@ -19,6 +19,7 @@ export class AccueilComponent implements OnInit {
   myChart:any;
   display:number=0;
   tabRecouvrement(){
+ 
     this.listRecouvremet =[];
     console.log(this.listeRecrutement);
     for(let r of this.Recouvrement){
@@ -77,8 +78,12 @@ export class AccueilComponent implements OnInit {
   data:any;
   listeExcel:any = [];
   listeRecrutement:any = [];
+  fileName:any;
   fileChange(event) {
     this.file= event.target.files[0];
+    console.log(this.file);
+    
+    this.fileName = this.file.name
     let fileReader = new FileReader();
     fileReader.onload = (e) => {
       //console.log(fileReader.result);
@@ -120,7 +125,14 @@ export class AccueilComponent implements OnInit {
     this.modalRef = this.modalService.show(template);
   }
   constructor(private modalService: BsModalService,public _derService:HandlerService) { }
-
+  lNewListe = [];
+  newNotif:number=0;
+  hideNotif(){
+    this.newNotif=0;
+  }
+  nbRecouvrement:number=0;
+  nbRV:number=0;
+  nbFinalaliser:number=0;
   ngOnInit() {
 
     this._derService.liste().then(res =>{
@@ -129,15 +141,20 @@ export class AccueilComponent implements OnInit {
       for(let i of this.Recouvrement){
         
         if(i.etat == 0){
+          this.nbRecouvrement = this.nbRecouvrement +1;
           this.nomRec = this.nomRec + this.getInfo1(i.client,'montant');
         }
         if(i.etat == 1){
+          this.nbRV = this.nbRV +1;
           this.nomRV = this.nomRV + this.getInfo1(i.client,'montant');
         }
         if(i.etat == 2){
+          this.nbFinalaliser = this.nbFinalaliser +1;
           this.nomFN = this.nomFN + this.getInfo1(i.client,'montant');
         }
+       
       }
+      //this.listRecouvremet = this.Recouvrement
       console.log('Recouvrement '+this.nomRec+' Rendez vous '+this.nomRV+' Finaliser '+this.nomFN); 
       this.myChart = new Chart('myChart', {
         type: 'pie',
@@ -148,9 +165,9 @@ export class AccueilComponent implements OnInit {
   
                 data: [this.nomRec,this.nomRV, this.nomFN],
                 backgroundColor: [
-                  'red',
-                  'green',
-                  'blue'
+                  '#A52A2A',
+                  '#007bff',
+                  '#FF8C00'
                 ],
                 borderWidth: 2
             }]
@@ -182,15 +199,18 @@ export class AccueilComponent implements OnInit {
       this._derService.callPeriodicHandler().then( res => {
       //console.log(res['message']);
       if(res['code']==1){
-        this.listRecouvremet =[]
+        this.lNewListe =[]
         let id
         for(let i = 0;i <this.Recouvrement.length - 1;++i){
           id =this.Recouvrement[this.Recouvrement.length-1].id
         }
-
        this._derService.newListe(id).then(rep =>{
-          this.listRecouvremet = rep['message'];
-         console.log(this.listRecouvremet.length);
+          this.lNewListe = rep['message'];
+          this.newNotif =this.lNewListe.length;
+          console.log(this.newNotif);
+          for(let i of this.lNewListe){
+            this.Recouvrement.push(i);
+          }
         })
       }
      /* console.log(res['code']);
@@ -208,10 +228,6 @@ export class AccueilComponent implements OnInit {
     } );
       
     }, 10000); 
-     
-
-     
-
   console.log(this.listRecouvremet);
   }
   getInfo1(requete,nom){
@@ -222,9 +238,14 @@ export class AccueilComponent implements OnInit {
     if(nom == "nom"){
       return req.nom;
     }
-
     if(nom == "prenom"){
       return req.prenom;   
+    }
+    if(nom == "telephone"){
+      return req.telephone;   
+    }
+    if(nom == "adresse"){
+      return req.adresse;   
     }
     return "null";
   }
