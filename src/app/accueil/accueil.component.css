@@ -111,7 +111,6 @@ myBtnMenu {
     background-color: lightslategrey;
     width: 100%;
     height: 1000px;
-    opacity: 1;
     position: absolute;
     font-family: Montserrat,sans-serif;
     padding: 0;margin: 0
@@ -120,7 +119,6 @@ myBtnMenu {
     background-color: whitesmoke;
     width: 100%;
     height: 1000px;
-    opacity: 1;
     position: absolute;
     font-family: Montserrat,sans-serif;
     padding: 0;margin: 0}

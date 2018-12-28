@@ -232,6 +232,14 @@ export class AccueilComponent implements OnInit {
       return  { 'themClaire': true,'themSombre':false};
     }
   }
+  changeBackThem(){
+    if(this.them == 1){
+      return  { 'backThemSombre':true,'backThemClaire':false};
+    }
+    if(this.them == 2){
+      return  { 'backThemSombre':false,'backThemClaire':true};
+    }
+  }
   soumission(){   
     this.soumettre = 0;
   }
@@ -414,7 +422,7 @@ export class AccueilComponent implements OnInit {
           events: ['click'],
           legend: {
             labels: {
-              fontColor: 'black'
+              fontColor: '#007bff'
             }
         }
         
@@ -471,7 +479,7 @@ export class AccueilComponent implements OnInit {
           events: ['click'],
           legend: {
             labels: {
-              fontColor: 'black'
+              fontColor: '#007bff'
             }
         }
          /* onClick: function(e) {

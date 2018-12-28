@@ -1,6 +1,6 @@
 <p></p>
 <div class="container col-lg-12 col-md-12 col-sm-12 col-xs-12"  style="padding: 0;margin: 0;margin-left: -1rem;">
-  <div [ngClass]=' changeThem()' ></div>
+  <div [ngClass]='changeBackThem()' ></div>
  <!-- <nav class="sidebar-nav">
     <ul>
       <li style="background-color: whitesmoke">ok</li>
@@ -139,15 +139,15 @@
                               </div>
                             </div>
                           </div>
-                        <div  id="chart1" class="col-12" style=" margin-top: 1rem; " >
-                          <div  style=" width: 680px; height: 513px; text-align: center;padding:0%;margin-left: 25%;box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);background-color: white;margin-left: 2rem;">
+                        <div  id="chart1"  class="col-12" style=" margin-top: 1rem; " >
+                          <div  [ngClass]=' changeThem()'  style=" width: 680px; height: 513px; text-align: center;padding:0%;margin-left: 25%;box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);background-color: white;margin-left: 2rem;">
                             <canvas  id="myChart2" width="680px" height="400" ></canvas>
                           </div>
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                        <div  id="chart" class="col-12" style=" margin-top: 1rem; " >
-                          <div  style=" width: 600px; height: 600px; text-align: center;padding:0%;margin-left: 25%;box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);background-color: white;margin-left: 2rem;">
+                        <div   id="chart" class="col-12" style=" margin-top: 1rem; " >
+                          <div  [ngClass]=' changeThem()' style=" width: 600px; height: 600px; text-align: center;padding:0%;margin-left: 25%;box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);background-color: white;margin-left: 2rem;">
                             <canvas  id="myChart" width="400" height="400" ></canvas>
                           </div>
                         </div>
