@@ -32,6 +32,18 @@ export class HandlerService {
     let link=this.url+"/newListe.php";
     return this.http.post(link,params,{headers:this.header}).toPromise().then( res => {console.log(res); return res} ).catch(error => {console.log(error); return 'bad' });
   }
+  public recherche(date): Promise<any>{
+    let data = JSON.stringify({date:date});
+    let params ='param='+data;
+    let link=this.url+"/recherche.php";
+    return this.http.post(link,params,{headers:this.header}).toPromise().then( res => {console.log(res); return res} ).catch(error => {console.log(error); return 'bad' });
+  }
+  public rechercheIntervalle(dateD,dateF): Promise<any>{
+    let data = JSON.stringify({dateD:dateD,dateF:dateF});
+    let params ='param='+data;
+    let link=this.url+"/rechercheIntervalle.php";
+    return this.http.post(link,params,{headers:this.header}).toPromise().then( res => {console.log(res); return res} ).catch(error => {console.log(error); return 'bad' });
+  }
 
   public remonter(id,numFile,reponse,message,operateur,phone): Promise<any>{
     //let params="id="+id;

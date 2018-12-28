@@ -17,7 +17,93 @@ export class AccueilComponent implements OnInit {
   listRecouvremet:any=[];
   indice:number;
   myChart:any;
+  myChart2:any;
   display:number=0;
+  intervalledateinit:string;
+  intervalleddatefinal:string;
+  rechercheIntervalle(){
+    this.tabDate=[]
+    this.tabRecouv=[]
+    this.tabRecouv=[];
+    this.tabRV=[];
+    this.tabFN=[];
+    this.listDay = [];
+    this._derService.rechercheIntervalle(this.intervalledateinit,this.intervalleddatefinal).then(res =>{
+      // console.log(res['message']);
+       this.listDay= res['message'];
+       if(this.listDay != undefined){
+        for(let i of this.listDay){
+          this.tabDate.push(i.dateEnregistremet)
+           if(i.etat == 0){
+            this.tabRecouv.push(this.getInfo1(i.client,'montant'));
+            this.tabFN.push(0);
+            this.tabRV.push(0);
+           }
+           if(i.etat == 1){
+            this.tabRV.push(this.getInfo1(i.client,'montant'));
+            this.tabRecouv.push(0);
+            this.tabFN.push(0);
+           }
+           if(i.etat == 2){
+            this.tabFN.push(this.getInfo1(i.client,'montant'));
+            this.tabRV.push(0);
+            this.tabRecouv.push(0);
+           }
+          
+         }
+       }else{
+        this.tabDate.push(this.intervalledateinit)
+        this.tabDate.push(this.intervalledateinit)
+        this.tabFN.push(0);
+        this.tabRV.push(0);
+        this.tabRecouv.push(0);
+        console.log(this.tabDate);
+       }
+      
+       //this.listRecouvremet = this.Recouvrement
+       console.log( this.tabDate); 
+       this.myChart2 = new Chart('myChart2', {
+        type: 'line',
+        data: {
+            labels: this.tabDate,
+            datasets: [{
+                label: 'Recouvrement',
+                data: this.tabRecouv,
+                borderColor: [
+                  '#A52A2A',
+                ],
+                borderWidth: 3
+                },
+               {
+                label: 'Rendez-vous',
+                data: this.tabRV,
+                borderColor: [
+                  '#007bff',
+                ],
+                borderWidth: 3
+                },
+                {
+                label: 'Finaliser',
+                data: this.tabFN,
+                borderColor: [
+                  'darkorange',
+                ],
+                borderWidth: 3
+              }
+          ]
+        },
+        options: {
+          events: ['click'],
+          legend: {
+            labels: {
+              fontColor: 'black'
+            }
+        }
+        
+        }
+    });
+     })
+  }
   tabRecouvrement(){
  
     this.listRecouvremet =[];
@@ -76,6 +162,7 @@ export class AccueilComponent implements OnInit {
   nomFN :any=0;
   file :any;
   data:any;
+  selectionjour:string
   listeExcel:any = [];
   listeRecrutement:any = [];
   fileName:any;
@@ -99,21 +186,52 @@ export class AccueilComponent implements OnInit {
       this.listeExcel= XLSX.utils.sheet_to_json(worksheet,{raw:true})
       for(let i = 0; i < this.listeExcel.length ;++i){
         this.listeRecrutement.push(this.listeExcel[i])
-        //console.log(this.listeRecrutement);
       }
       this._derService.soumettre(this.listeRecrutement).then(res=>{console.log(res);
       })
-     // console.log(XLSX.read(fileReader.result, {type: 'binary', cellDates:true, cellStyles:true}));
-      //console.log(XLSX.utils.sheet_to_json(fileReader));
-      //console.log(data);
-      //let json = XLSX.CFB.read(data)
     } 
     fileReader.readAsArrayBuffer(this.file);
     for(let i of this.listeExcel){
       console.log(i.nom);
     }
   }
-
+  update(){
+    this._derService.liste().then(res =>{
+       this.Recouvrement= res['message'];
+       for(let i of this.Recouvrement){
+         
+         if(i.etat == 0){
+           this.nbRecouvrement = this.nbRecouvrement +1;
+           this.nomRec = this.nomRec + this.getInfo1(i.client,'montant');
+         }
+         if(i.etat == 1){
+           this.nbRV = this.nbRV +1;
+           this.nomRV = this.nomRV + this.getInfo1(i.client,'montant');
+         }
+         if(i.etat == 2){
+           this.nbFinalaliser = this.nbFinalaliser +1;
+           this.nomFN = this.nomFN + this.getInfo1(i.client,'montant');
+         }
+        
+       }
+    })
+  }
+  them:any;
+  
+  sombre(){
+    this.them = 1;
+  }
+  claire(){
+    this.them = 2;
+  }
+  changeThem(){
+    if(this.them == 1){
+      return  { 'themClaire': false,'themSombre':true};
+    }
+    if(this.them == 2){
+      return  { 'themClaire': true,'themSombre':false};
+    }
+  }
   soumission(){   
     this.soumettre = 0;
   }
@@ -130,11 +248,180 @@ export class AccueilComponent implements OnInit {
   hideNotif(){
     this.newNotif=0;
   }
+  Recherche(){
+    console.log(this.selectionjour);
+    this.tabDate=[]
+    this.tabRecouv=[]
+    this.tabRecouv=[];
+    this.tabRV=[];
+    this.tabFN=[];
+    this.listDay = [];
+    this._derService.recherche(this.selectionjour).then(res =>{
+      // console.log(res['message']);
+       this.listDay= res['message'];
+       if(this.listDay != undefined){
+        for(let i of this.listDay){
+          this.tabDate.push(i.dateEnregistremet)
+           if(i.etat == 0){
+            this.tabRecouv.push(this.getInfo1(i.client,'montant'));
+            this.tabFN.push(0);
+            this.tabRV.push(0);
+           }
+           if(i.etat == 1){
+            this.tabRV.push(this.getInfo1(i.client,'montant'));
+            this.tabRecouv.push(0);
+            this.tabFN.push(0);
+           }
+           if(i.etat == 2){
+            this.tabFN.push(this.getInfo1(i.client,'montant'));
+            this.tabRV.push(0);
+            this.tabRecouv.push(0);
+           }
+         }
+       }else{
+        this.tabDate.push(this.selectionjour)
+        this.tabFN.push(0);
+        this.tabRV.push(0);
+        this.tabRecouv.push(0);
+        console.log(this.tabDate);
+       }
+      
+       //this.listRecouvremet = this.Recouvrement
+       console.log( this.tabDate); 
+       this.myChart2 = new Chart('myChart2', {
+        type: 'line',
+        data: {
+            labels: this.tabDate,
+            datasets: [{
+                label: 'Recouvrement',
+                data: this.tabRecouv,
+                borderColor: [
+                  '#A52A2A',
+                ],
+                borderWidth: 3
+                },
+               {
+                label: 'Rendez-vous',
+                data: this.tabRV,
+                borderColor: [
+                  '#007bff',
+                ],
+                borderWidth: 3
+                },
+                {
+                label: 'Finaliser',
+                data: this.tabFN,
+                borderColor: [
+                  'darkorange',
+                ],
+                borderWidth: 3
+              }
+          ]
+        },
+        options: {
+          events: ['click'],
+          legend: {
+            labels: {
+              fontColor: 'black'
+            }
+        }
+        
+        }
+    });
+     })
+  }
+  
   nbRecouvrement:number=0;
   nbRV:number=0;
   nbFinalaliser:number=0;
+  tabDate:any=[]
+  tabRecouv:any=[]
+  tabRV:any=[]
+  tabFN:any=[]
+  listDay:any = []
   ngOnInit() {
-
+    this.selectionjour =  ((new Date()).toJSON()).split("T",2)[0];
+    console.log(this.selectionjour);
+    this._derService.recherche(this.selectionjour).then(res =>{
+      this.tabDate=[]
+      this.tabRecouv=[]
+      this.tabRecouv=[];
+      this.tabRV=[];
+      this.tabFN=[];
+      this.listDay = [];
+      // console.log(res['message']);
+       this.listDay= res['message'];
+       if(this.listDay != undefined){
+        for(let i of this.listDay){
+          this.tabDate.push(i.dateEnregistremet)
+           if(i.etat == 0){
+            this.tabRecouv.push(this.getInfo1(i.client,'montant'));
+            this.tabFN.push(0);
+            this.tabRV.push(0);
+           }
+           if(i.etat == 1){
+            this.tabRV.push(this.getInfo1(i.client,'montant'));
+            this.tabRecouv.push(0);
+            this.tabFN.push(0);
+           }
+           if(i.etat == 2){
+            this.tabFN.push(this.getInfo1(i.client,'montant'));
+            this.tabRV.push(0);
+            this.tabRecouv.push(0);
+           }
+         }
+       }else{
+        this.tabDate.push(this.selectionjour)
+        this.tabFN.push(0);
+        this.tabRV.push(0);
+        this.tabRecouv.push(0);
+        console.log(this.tabDate);
+       }
+       
+       //this.listRecouvremet = this.Recouvrement
+       console.log( this.tabDate); 
+       this.myChart2 = new Chart('myChart2', {
+        type: 'line',
+        data: {
+            labels: this.tabDate,
+            datasets: [{
+                label: 'Recouvrement',
+                data: this.tabRecouv,
+                borderColor: [
+                  '#A52A2A',
+                ],
+                borderWidth: 3
+                },
+               {
+                label: 'Rendez-vous',
+                data: this.tabRV,
+                borderColor: [
+                  '#007bff',
+                ],
+                borderWidth: 3
+                },
+                {
+                label: 'Finaliser',
+                data: this.tabFN,
+                borderColor: [
+                  'darkorange',
+                ],
+                borderWidth: 3
+              }
+          ]
+        },
+        options: {
+          events: ['click'],
+          legend: {
+            labels: {
+              fontColor: 'black'
+            }
+        }
+        
+        }
+    });
+     })
+    
     this._derService.liste().then(res =>{
      // console.log(res['message']);
       this.Recouvrement= res['message'];
@@ -167,14 +454,26 @@ export class AccueilComponent implements OnInit {
                 backgroundColor: [
                   '#A52A2A',
                   '#007bff',
-                  '#FF8C00'
+                  'darkorange'
                 ],
-                borderWidth: 2
+                borderColor: [
+                  'white',
+                  'white',
+                  'white',
+                  'white',
+                  'white',
+                  'white'
+                ],
+                borderWidth: 3
             }]
         },
-       // options: {
-          //events: ['click'],
-          
+        options: {
+          events: ['click'],
+          legend: {
+            labels: {
+              fontColor: 'black'
+            }
+        }
          /* onClick: function(e) {
             var element = this.getElementAtEvent(e);
             if (element.length) {
@@ -192,7 +491,7 @@ export class AccueilComponent implements OnInit {
               alert(url);
             }
           }*/
-        //}
+        }
     });
     })
     setInterval(() => {
@@ -212,23 +511,36 @@ export class AccueilComponent implements OnInit {
             this.Recouvrement.push(i);
           }
         })
+            this._derService.liste().then(res =>{
+     // console.log(res['message']);
+      this.Recouvrement= res['message'];
+      for(let i of this.Recouvrement){
+        
+        if(i.etat == 0){
+          this.nbRecouvrement = this.nbRecouvrement +1;
+          this.nomRec = this.nomRec + this.getInfo1(i.client,'montant');
+        }
+        if(i.etat == 1){
+          this.nbRV = this.nbRV +1;
+          this.nomRV = this.nomRV + this.getInfo1(i.client,'montant');
+        }
+        if(i.etat == 2){
+          this.nbFinalaliser = this.nbFinalaliser +1;
+          this.nomFN = this.nomFN + this.getInfo1(i.client,'montant');
+        }
+       
       }
-     /* console.log(res['code']);
-      this.code=res['code'];
-      if(this.code == 1)
-      { 
-        this.listRemonte=res['message'];
-        this.playNotif=1;
+      //this.listRecouvremet = this.Recouvrement
+      console.log('Recouvrement '+this.nomRec+' Rendez vous '+this.nomRV+' Finaliser '+this.nomFN); 
+
+    })
       }
-      if(this.playNotif == 1){
-        this.audio = new Audio();
-        this.audio.src ='./assets/windows-8-sms.mp3';
-        this.audio.play();  
-      }*/
+   
     } );
       
     }, 10000); 
-  console.log(this.listRecouvremet);
+      console.log(this.listRecouvremet);
+
   }
   getInfo1(requete,nom){
     let req = JSON.parse(requete);

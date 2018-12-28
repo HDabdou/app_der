@@ -1,9 +1,17 @@
 <p></p>
-<div class="container col-12" style="background-color: whitesmoke" >
-    <div class="panel panel-info">
+<div class="container col-lg-12 col-md-12 col-sm-12 col-xs-12"  style="padding: 0;margin: 0;margin-left: -1rem;">
+  <div [ngClass]=' changeThem()' ></div>
+ <!-- <nav class="sidebar-nav">
+    <ul>
+      <li style="background-color: whitesmoke">ok</li>
+    </ul>
+  </nav> -->
+
+  <div class="panel panel-info">
         <div class="panel panel-heading"></div>
         <div class="panel panel-body">
-          <nav class="nav nav-tabs myNav" style="background-color: white;margin-top:-1rem">
+          
+          <nav class="nav nav-tabs myNav" [ngClass]=' changeThem()' style="margin-top:-1rem;">
               <a class="nav-item nav-link active" style="border-radius: 1rem 0rem 1rem 1rem;" href="#accueil" data-toggle="tab">
                 <span class="badge myBadge" style="font-size: 150%;margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;"><i class="fa fa-home" style="font-size:24px"></i>
                   Accueil</span>
@@ -12,106 +20,139 @@
                 <span class="badge myBadge" (click)="hideNotif()" style="font-size: 150%;margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;">Suivi</span>
                 <span *ngIf="newNotif > 0" (click)="hideNotif()" class="dot" style="position: absolute;text-align: center;border: 1px solid white ;box-shadow: 1px 2px 4px rgba(0, 0, 0, .5)">{{newNotif}}</span>
               </a>
+              <div class="dropdown" style="margin-left: 60rem">
+                <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Théme
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" (click)="sombre()"  style="cursor: pointer;">Sombre</a>
+                  <a class="dropdown-item" (click)="claire()" style="cursor: pointer;">Claire</a>
+                </div>
+              </div>
             </nav>
             <div class="tab-content">
                 <div class="tab-pane active" id="accueil">
-                  <label for="file" class="label-file" style="font-size: 25px">Soumettre une liste</label>
+                  <label for="file" class="label-file" style="font-size: 25px;margin-left: 3rem;position: absolute">Soumettre une liste</label>
                   <label style="margin-left:1rem;font-size: 18px">{{fileName}}</label>
                   <input id="file" class="input-file" type="file"  (change)="fileChange($event)" placeholder="Uploader Image" accept=".xlsx,.xls">
+                  <div class="row" style="margin-left: 2rem">
+                    <div  class="col-4" style="margin-top: 1rem;">
+                      <div class="card card-stats myCard" [ngClass]=' changeThem()'>
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-6">
+                              <div class="numbers">
+                                <p class="card-category" >Recouvrement</p>
+                                <h2 class="card-title" >{{nbRecouvrement}}</h2>
+                              </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="icon-big text-center">
+                                    <div class="icon-warning">
+                                    <i (click)="tabRecouvrement();openModal(template)" class="fa fa-list-alt" style="font-size: 62px"></i> <p (click)="tabRecouvrement();openModal(template)" style="cursor: pointer;">voir la liste</p> 
+                                    </div> 
+                                </div>
+                              </div>
+                          </div>
+                          <div class="card-footer" style="background-color: #A52A2A">
+                            <div class="stats" >
+                              <i (click)="update()" style="color: white" class="fa fa-refresh"></i>
+                              <span style="color: white;margin-left: 3px">Update now</span> 
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-4" style="margin-top: 1rem;" >
+                      <div class="card card-stats myCard" [ngClass]=' changeThem()'>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                  <div class="numbers">
+                                    <p class="card-category" >Rendez-vous</p>
+                                    <h2 class="card-title" >{{nbRV}}</h2>
+                                  </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="icon-big text-center">
+                                        <div class="icon-warning">
+                                        <i (click)="tabRendezVous();openModal(template)" class="fa fa-list-alt" style="font-size: 62px"></i> <p (click)="tabRendezVous();openModal(template)" style="cursor: pointer;">voir la liste</p> 
+                                        </div> 
+                                    </div>
+                                  </div>
+                            </div>
+                          <div class="card-footer" style="background-color: #007bff">
+                              <div class="stats" >
+                                <i (click)="update()" style="color: white" class="fa fa-refresh"></i>
+                                <span style="color: white;margin-left: 3px">Update now</span> 
+                              </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-4" style="margin-top: 1rem;">
+                        <div class="card card-stats myCard" [ngClass]=' changeThem()'>
+                          <div class="card-body">
+                              <div class="row">
+                                  <div class="col-6">
+                                    <div class="numbers">
+                                      <p class="card-category" >Finalisés</p>
+                                      <h2 class="card-title" >{{nbFinalaliser}}</h2>
+                                    </div>
+                                  </div>
+                                  <div class="col-6">
+                                    <div class="icon-big text-center">
+                                      <div class="icon-warning" >
+                                        <i (click)="tabFinaliser();openModal(template)" class="fa fa-list-alt" style="font-size: 62px"></i> <p (click)="tabFinaliser();openModal(template)" style="cursor: pointer;">voir la liste</p> 
+                                      </div> 
+                                    </div>
+                                  </div>
+                              </div>
+                              <div class="card-footer" style="background-color: darkorange">
+                                <div class="stats" >
+                                  <i (click)="update()" style="color: white" class="fa fa-refresh"></i>
+                                  <span style="color: white;margin-left: 3px">Update now</span> 
+                                </div>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                  
                   <div class="row">
-                    <div class="col-8">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div class="row"  [ngClass]=' changeThem()' style="margin-bottom: 2rem;margin-left: 3rem;margin-right: 3rem;box-shadow: 1px 2px 3px black;background-color: white;height: 74px;margin-top: 1rem;padding: 0;width: 677px">
+                            <div class="col-5">
+                              <label  class="control-label" for="dateJour">Date par jour</label>
+                              <div class="row">
+                              <input  type="date" id="datejour" style="width: 9rem;margin-left: 5px" name="datejour" [(ngModel)]="selectionjour" />
+                                <i  class="btn btn-primary fa fa-search" style="margin-left: 0.5rem" (click)="Recherche()" ></i>
+                              </div>
+                            </div>
+                            <div class="col-7" >
+                              <label style="margin-left: 2rem" class="control-label">Date par intervalle</label>
+                              <div class="row" style="margin-left: -3rem">
+                                  <input  name="intervalledateinit" style="width: 9rem"  type="date" [(ngModel)]="intervalledateinit" >
+                                   <span style="color: white">à</span> 
+                                  <input name="intervalleddatefinal" style="width: 9rem;margin-left: 0.5rem; margin-right: 1rem" type="date" [(ngModel)]="intervalleddatefinal">
+                                  <i  class="btn btn-primary fa fa-search" type="button" (click)="rechercheIntervalle()" ></i>
+                              </div>
+                            </div>
+                          </div>
+                        <div  id="chart1" class="col-12" style=" margin-top: 1rem; " >
+                          <div  style=" width: 680px; height: 513px; text-align: center;padding:0%;margin-left: 25%;box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);background-color: white;margin-left: 2rem;">
+                            <canvas  id="myChart2" width="680px" height="400" ></canvas>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                         <div  id="chart" class="col-12" style=" margin-top: 1rem; " >
-                          <div  style=" width: 600px; height: 600px; text-align: center;padding:0%;margin-left: 20%;box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);background-color: white;margin-left: 2rem;">
+                          <div  style=" width: 600px; height: 600px; text-align: center;padding:0%;margin-left: 25%;box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);background-color: white;margin-left: 2rem;">
                             <canvas  id="myChart" width="400" height="400" ></canvas>
                           </div>
                         </div>
                     </div>
-                    <div class="col-4">
-                        <div  style=" margin-top: 1rem; ">
-                            <div  >
-                              <div class="card card-stats" style="box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);background-color: #A52A2A">
-                                <div class="card-body">
-                                  <div class="row">
-                                    <div class="col-6">
-                                      <div class="numbers">
-                                        <p class="card-category" style="color: white">Recouvrement</p>
-                                        <h2 class="card-title" style="color: white">{{nbRecouvrement}}</h2>
-                                      </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="icon-big text-center">
-                                           <div class="icon-warning">
-                                            <i (click)="tabRecouvrement();openModal(template)" class="fa fa-list-alt" style="color: white;font-size: 62px"></i> <p (click)="tabRecouvrement();openModal(template)" style="color: white;cursor: pointer;">voir la liste</p> 
-                                           </div> 
-                                        </div>
-                                      </div>
-                                  </div>
-                                  <div class="card-footer" style="background-color: white">
-                                    <div class="stats" >
-                                      <i class="fa fa-refresh"></i>
-                                      Update now
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div style="margin-top: 1rem;" >
-                              <div class="card card-stats" style="box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);background-color: #007bff">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-6">
-                                          <div class="numbers">
-                                            <p class="card-category" style="color: white">Rendez-vous</p>
-                                            <h2 class="card-title" style="color: white">{{nbRV}}</h2>
-                                          </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="icon-big text-center">
-                                               <div class="icon-warning">
-                                                <i (click)="tabRendezVous();openModal(template)" class="fa fa-list-alt" style="color: white;font-size: 62px"></i> <p (click)="tabRendezVous();openModal(template)" style="color: white;cursor: pointer;">voir la liste</p> 
-                                               </div> 
-                                            </div>
-                                          </div>
-                                    </div>
-                                  <div class="card-footer" style="background-color: white">
-                                      <div class="stats" >
-                                        <i class="fa fa-refresh"></i>
-                                        Update now
-                                      </div>
-                                    </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div  style="margin-top: 1rem;">
-                                <div class="card card-stats" style="box-shadow: 1px 2px 4px rgba(250, 36, 36, 0.5);background-color: #FF8C00">
-                                  <div class="card-body">
-                                      <div class="row">
-                                          <div class="col-6">
-                                            <div class="numbers">
-                                              <p class="card-category" style="color: white">Finalisés</p>
-                                              <h2 class="card-title" style="color: white">{{nbFinalaliser}}</h2>
-                                            </div>
-                                          </div>
-                                          <div class="col-6">
-                                            <div class="icon-big text-center">
-                                              <div class="icon-warning" >
-                                                <i (click)="tabFinaliser();openModal(template)" class="fa fa-list-alt" style="color: white;font-size: 62px"></i> <p (click)="tabFinaliser();openModal(template)" style="color: white;cursor: pointer;">voir la liste</p> 
-                                              </div> 
-                                            </div>
-                                          </div>
-                                      </div>
-                                      <div class="card-footer" style="background-color: white">
-                                        <div class="stats" >
-                                          <i class="fa fa-refresh"></i>
-                                          Update now
-                                        </div>
-                                      </div>
-                                  </div>
-                                </div>
-                              </div>
-                         </div>
-    
-                    </div>
+                    
                   </div>
                    <!-- <div class="row" style="margin-top:1rem">
                         <div class="col-2">
@@ -128,31 +169,33 @@
                      
                 </div>
                 <div class="tab-pane" id="suivi">
-                    <div id="om-options" style="margin-top: 1rem">
-                        <a href="#tab" class="btn myBtnMenu " (click)="tabRecouvrement()" style="margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;"  data-toggle="tab">Recouvrement</a>
-                        <a href="#tab" class="btn myBtnMenu " (click)="tabRendezVous()" style="margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;"  data-toggle="tab">Rendez-vous</a>
-                        <a href="#tab" class="btn  myBtnMenu " (click)="tabFinaliser()" style="margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;"  data-toggle="tab">Finalisés</a>
-                        <input type="text" style="width: 15%;border: 1px solid;margin-left: 3%;padding-left: 13px;" placeholder="Recherche ..." [(ngModel)]="filtre" name="filtre" id="">
+                    <div id="om-options" style="margin-top: 1rem;position: absolute;margin-left: 29rem;background-color: white;">
+                        <a href="#tab" class="btn myBtnMenu " (click)="tabRecouvrement()" style="margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;color: black"  data-toggle="tab">Recouvrement</a>
+                        <a href="#tab" class="btn myBtnMenu " (click)="tabRendezVous()" style="margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;color: black"  data-toggle="tab">Rendez-vous</a>
+                        <a href="#tab" class="btn  myBtnMenu " (click)="tabFinaliser()" style="margin-left: 8px;border-radius: 1rem 0rem 1rem 1rem;color: black"  data-toggle="tab">Finalisés</a>
+                        <input type="text" style="width: 25%;border: 1px solid;margin-left: 3%;padding-left: 13px;" placeholder="Recherche ..." [(ngModel)]="filtre" name="filtre" id="">
                     </div>
                     <div  id="tab">
-                        <table class="table"  style="margin-top:1rem">
-                            <thead class="tableTh">
+                        <table class="table table-responsive table-striped" style="margin-top: 5rem;position: absolute;width: 69rem;margin-left: 13rem;background-color: white;">
+                            <thead >
                             <tr>
+                              <th scope="col">Date</th>
+                              <th scope="col">Prenom</th>
                               <th scope="col">Nom</th>
                               <th scope="col">Montant</th>
                               <th scope="col">Telephone</th>
                               <th scope="col">Adresse</th>
-                              <th scope="col">Date</th>
                               <th scope="col">Rendez-vous</th>
                             </tr>
                           </thead>
                           <tbody>
                           <tr *ngFor="let l of listRecouvremet | filterBy: ['dateEnregistremet','client']: filtre; let i=index">
-                              <td ><strong>{{getInfo1(l.client,'prenom')}} {{getInfo1(l.client,'nom')}} </strong></td>
+                              <td ><strong>{{l.dateEnregistremet}}</strong></td>
+                              <td ><strong>{{getInfo1(l.client,'prenom')}} </strong></td>
+                              <td ><strong>{{getInfo1(l.client,'nom')}} </strong></td>
                               <td ><strong>{{getInfo1(l.client,'montant')}}</strong></td>
                               <td ><strong>{{getInfo1(l.client,'telephone')}}</strong></td>
                               <td ><strong>{{getInfo1(l.client,'adresse')}}</strong></td>
-                              <td ><strong>{{l.dateEnregistremet}}</strong></td>
                               <td ><strong *ngIf="l.heureRV != null">{{l.heureRV}}</strong><strong *ngIf="l.heureRV == null">-</strong></td>
                           </tbody>
                         </table>
